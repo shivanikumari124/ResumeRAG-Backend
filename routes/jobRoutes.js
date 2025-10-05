@@ -1,13 +1,14 @@
-const express = require("express")
-const { createJob, listJobs, getJobMatches } = require("../controllers/jobController")
-const auth = require("../middleware/auth") // protect all job routes with auth middleware
+const express = require("express");
+const { createJob, listJobs, getJobMatches } = require("../controllers/jobController");
+const auth = require("../middleware/auth"); // JWT middleware
 
-const router = express.Router()
+const router = express.Router();
 
-router.use(auth) // require JWT for all routes below
+// Public route: anyone can see job listings
+router.get("/", listJobs);
 
-router.get("/", listJobs)
-router.post("/", createJob)
-router.get("/:id/matches", getJobMatches)
+// Protected routes: only logged-in users
+router.post("/", auth, createJob);
+router.get("/:id/matches", auth, getJobMatches);
 
-module.exports = router
+module.exports = router;

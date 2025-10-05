@@ -1,13 +1,19 @@
-const express = require("express")
-const { uploadMiddleware, createResume, listResumes, searchResumes } = require("../controllers/resumeController")
-const auth = require("../middleware/auth") // Added auth middleware
+const express = require("express");
+const {
+  uploadMiddleware,
+  createResume,
+  listResumes,
+  searchResumes
+} = require("../controllers/resumeController");
+const auth = require("../middleware/auth"); // JWT middleware
 
-const router = express.Router()
+const router = express.Router();
 
-router.use(auth) // Added JWT authentication for all routes below
+// Public routes
+router.get("/", listResumes);
+router.post("/search", searchResumes);
 
-router.get("/", listResumes)
-router.post("/", uploadMiddleware, createResume)
-router.post("/search", searchResumes)
+// Protected routes
+router.post("/", auth, uploadMiddleware, createResume);
 
-module.exports = router
+module.exports = router;
